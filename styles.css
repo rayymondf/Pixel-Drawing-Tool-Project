@@ -8,6 +8,7 @@ html, body {
     flex-direction:column;
     justify-content: center;
     align-items: center;
+    /* background:#66cfff; */
 }
 
 #container {
@@ -36,7 +37,7 @@ button{
 
 }
 
-#hover{
+.active{
     background-color: green;
 }
 
