@@ -1,58 +1,106 @@
-const container = document.querySelector("#container")
+const container = document.querySelector("#container");
+const erase = document.querySelector("#erase");
+const grid = document.querySelector("#grid");
+const draw = document.querySelector("#draw");
+const hover = document.querySelector("#hover");
+
 let size = 16;
+let isDrawing = false;
+let drawMode = false;
 
+create_Grid();
 
-// for (let row = 0; row < size; row++) {
-//     let temp_row = document.createElement("div");
-//     temp_row.style.display = "flex";
-//     temp_row.style.width = "500px";
-//     temp_row.style.height = `${500 / size}px`;
-//     container.appendChild(temp_row);
+erase.addEventListener("click", create_Grid);
+grid.addEventListener("click", grid_Size);
 
-//     for (let col = 0; col < size; col++) {
-//         let temp_col = document.createElement("div");
-//         temp_col.style.width = `${500 / size}px`;
-//         temp_col.style.height = `${500 / size}px`;
-//         temp_col.style.outline = "1px solid black";
-//         temp_row.appendChild(temp_col);
-//     }
-// }
+draw.addEventListener("click", () => {
+    drawMode = true;
+    draw.style.backgroundColor = "green";
+    hover.style.backgroundColor = "white";
+});
 
-create_Grid()
+hover.addEventListener("click", () => {
+    drawMode = false;
+    isDrawing = false;
+    draw.style.backgroundColor = "white";
+    hover.style.backgroundColor = "green";
+});
 
-function grid_Size(){
-    size = prompt("Enter the # of grids:")
-    create_Grid()
+document.addEventListener("mousedown", () => {
+    if (drawMode) {
+        isDrawing = true;
+    }
+});
+
+document.addEventListener("mouseup", () => {
+    isDrawing = false;
+});
+
+function grid_Size() {
+    let temp_size = prompt("Enter the # of grids:");
+
+    if (temp_size === null || temp_size.trim() === "") {
+        return;
+    }
+
+    temp_size = Number(temp_size);
+
+    if (!Number.isInteger(temp_size) || temp_size <= 0) {
+        return;
+    }
+
+    size = temp_size;
+    create_Grid();
 }
 
+function create_Grid() {
+    container.replaceChildren();
+    let pixels = 600 / size;
 
-function create_Grid(){
-    container.replaceChildren()
-    let pixels = 600/size;
-    for(let box = 0; box < (size*size);box++){
-        let temp_box = document.createElement("div")
-        temp_box.style.width = `${pixels}px`
-        temp_box.style.height = `${pixels}px`
-        temp_box.style.background = `white`;
-        temp_box.style.outline = `1px solid black`;
-        temp_box.style.flexShrink = '0'
-        container.appendChild(temp_box)
-        let hoverTimer;
+    for (let box = 0; box < size * size; box++) {
+        let temp_box = document.createElement("div");
+        temp_box.style.width = `${pixels}px`;
+        temp_box.style.height = `${pixels}px`;
+        temp_box.style.backgroundColor = "white";
+        temp_box.style.outline = "1px solid black";
+        temp_box.style.flexShrink = "0";
 
-        temp_box.addEventListener("mouseover", ()=> {
-            clearTimeout(hoverTimer);
-            temp_box.style.backgroundColor = "black";
-            hoverTimer = setTimeout(() => {
-                temp_box.style.backgroundColor = "white";
-                temp_box.style.outline = `1px solid black`;
+        container.appendChild(temp_box);
 
-            }, 500);
-        })
+        hoverEvent(temp_box);
+        drawEvent(temp_box);
     }
 }
 
-const erase = document.querySelector("#erase");
-const grid = document.querySelector("#grid");
+function hoverEvent(temp_box) {
+    let hoverTimer;
 
-erase.addEventListener("click",create_Grid)
-grid.addEventListener("click",grid_Size)
+    temp_box.addEventListener("mouseover", () => {
+        if (!drawMode) {
+            clearTimeout(hoverTimer);
+            temp_box.style.backgroundColor = rgb();
+
+            hoverTimer = setTimeout(() => {
+                temp_box.style.backgroundColor = "white";
+            }, 500);
+        }
+    });
+}
+
+function drawEvent(temp_box) {
+    temp_box.addEventListener("mousedown", () => {
+        if (drawMode) {
+            temp_box.style.backgroundColor = rgb();
+        }
+    });
+
+    temp_box.addEventListener("mouseover", () => {
+        if (drawMode && isDrawing) {
+            temp_box.style.backgroundColor = rgb();
+        }
+    });
+}
+
+function rgb() {
+    return `rgb(${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)},${Math.floor(Math.random() * 256)})`;
+}

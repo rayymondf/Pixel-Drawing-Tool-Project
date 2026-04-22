@@ -28,6 +28,18 @@ html, body {
 
 button{
     margin: 20px;
-    width: 80px;
-    height: 30px;
+    width: 100px;
+    height: 40px;
+    outline: 1px solid black;
+    border-radius: 5px;
+    background: white;
+
+}
+
+#hover{
+    background-color: green;
+}
+
+button:hover{
+    background:lightgrey;
 }
